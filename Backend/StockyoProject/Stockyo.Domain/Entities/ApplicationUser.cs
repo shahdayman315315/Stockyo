@@ -13,8 +13,6 @@ namespace Stockyo.Domain.Entities
         public string FullName { get; set; } 
         public int? StoreId { get; set; } 
 
-        [ForeignKey("StoreId")]
-       
         public List<RefreshToken> RefreshTokens { get; set; } = new();
 
 
