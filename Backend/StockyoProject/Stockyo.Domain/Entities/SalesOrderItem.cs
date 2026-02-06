@@ -19,8 +19,8 @@ namespace Stockyo.Domain.Entities
         public virtual Product Product { get; set; }
 
         public int BatchId { get; set; }
-        [ForeignKey("BatchId")]
-        public virtual Batche Batch { get; set; }
+     
+        public  Batche Batch { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
     }

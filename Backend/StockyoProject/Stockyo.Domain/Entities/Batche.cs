@@ -13,8 +13,8 @@ namespace Stockyo.Domain.Entities
         public int StoreId { get; set; }
 
         public int ProductId { get; set; }
-        [ForeignKey("ProductId")]
-        public virtual Product Product { get; set; } 
+       
+        public  Product Product { get; set; } 
 
         public int Quantity { get; set; }
         public decimal CostPrice { get; set; }
