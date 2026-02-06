@@ -20,6 +20,7 @@ namespace Stockyo.Domain.Interfaces
         IBaseRepository<Notification> Notifications {  get; }
         IBaseRepository<Batche> Batches {  get; }
 
+        IBaseRepository<RefreshToken> RefreshTokens { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken=default);
          
     }

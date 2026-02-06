@@ -23,7 +23,7 @@ namespace Stockyo.Infrastructure.Repositories
         private Lazy<IBaseRepository<LostSales>> _lostSales;
         private Lazy<IBaseRepository<Notification>> _notifications;
         private Lazy<IBaseRepository<Batche>> _batches;
-
+        private Lazy<IBaseRepository<RefreshToken>> _refreshTokens;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -37,6 +37,7 @@ namespace Stockyo.Infrastructure.Repositories
             _stores = CreateRepository<IBaseRepository<Store>, BaseRepository<Store>>();
             _salesOrders = CreateRepository<IBaseRepository<SalesOrder>, BaseRepository<SalesOrder>>();
             _products = CreateRepository<IBaseRepository<Product>, BaseRepository<Product>>();
+            _refreshTokens= CreateRepository<IBaseRepository<RefreshToken>, BaseRepository<RefreshToken>>();
 
 
         }
@@ -63,6 +64,8 @@ namespace Stockyo.Infrastructure.Repositories
         public IBaseRepository<Notification> Notifications => _notifications.Value;
 
         public IBaseRepository<Batche> Batches => _batches.Value;
+
+        public IBaseRepository<RefreshToken> RefreshTokens => _refreshTokens.Value;
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken=default)
         {
