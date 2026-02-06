@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Stockyo.Application.Helper;
 using Stockyo.Application.Interfaces;
@@ -27,13 +28,13 @@ namespace Stockyo.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly JwtSettings _jwt;
         public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, 
-            IEmailService emailService, IUnitOfWork unitOfWork, JwtSettings jwt)
+            IEmailService emailService, IUnitOfWork unitOfWork, IOptions<JwtSettings> jwt)
         {
             _emailService = emailService;
             _userManager = userManager;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _jwt = jwt;
+            _jwt = jwt.Value;
         }
 
         public async Task ForgetPasswordAsync(ForgetPasswordDto dto)
