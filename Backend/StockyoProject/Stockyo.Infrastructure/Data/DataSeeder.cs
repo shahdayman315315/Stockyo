@@ -12,7 +12,7 @@ namespace Stockyo.Infrastructure.Data
     {
         public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
         {
-            var roles = new List<string>() { "Admin", "Merchant", "Customer" };
+            var roles = new List<string>() { "Admin", "BusinessOwner" };
 
             foreach (var role in roles)
             {
@@ -38,6 +38,7 @@ namespace Stockyo.Infrastructure.Data
                 var adminUser = new ApplicationUser()
                 {
                     UserName = "AdminUser",
+                    FullName="AdminUser",
                     Email = "admin@gmail.com",
                     EmailConfirmed = true,
 

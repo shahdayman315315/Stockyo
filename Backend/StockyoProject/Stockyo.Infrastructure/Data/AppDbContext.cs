@@ -11,6 +11,8 @@ namespace Stockyo.Infrastructure.Data
 {
     public class AppDbContext:IdentityDbContext<ApplicationUser>
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
         public DbSet<Store> Stores { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -24,6 +26,12 @@ namespace Stockyo.Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<ApplicationUser>()
+               .HasMany(u => u.RefreshTokens)
+               .WithOne(r=>r.User)
+               .HasForeignKey(rt => rt.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<Store>()
                 .HasMany(s => s.Products)
                 .WithOne()
@@ -34,11 +42,10 @@ namespace Stockyo.Infrastructure.Data
                 .WithOne(c => c.Store)
                 .HasForeignKey(c => c.StoreId);
 
-            builder.Entity<Store>()
-                .HasMany(s => s.Users)
-                .WithOne()
-                .HasForeignKey(u => u.StoreId)
-                .OnDelete(DeleteBehavior.SetNull);
+            builder.Entity<ApplicationUser>()
+             .HasOne(u => u.Store)
+             .WithOne(s => s.User)
+             .HasForeignKey<Store>(s => s.UserId); 
 
             builder.Entity<Category>()
                 .HasMany(c => c.Products)
@@ -71,7 +78,10 @@ namespace Stockyo.Infrastructure.Data
                 .HasForeignKey("UserId")
                 .OnDelete(DeleteBehavior.SetNull);
 
-          
+            builder.Entity<SalesOrder>()
+               .Property(s => s.TotalAmount)
+               .HasColumnType("decimal(18,2)");  
+
             builder.Entity<SalesOrderItem>()
                 .HasOne(i => i.Product)
                 .WithMany()
@@ -84,7 +94,9 @@ namespace Stockyo.Infrastructure.Data
                 .HasForeignKey(i => i.BatchId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-         
+            builder.Entity<SalesOrderItem>()
+                 .Property(u => u.UnitPrice)
+                 .HasColumnType("decimal(18,2)");
             builder.Entity<LostSales>()
                 .HasOne(ls => ls.Product)
                 .WithMany()
