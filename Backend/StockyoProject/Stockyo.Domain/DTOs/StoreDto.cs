@@ -9,6 +9,8 @@ namespace Stockyo.Domain.DTOs
 {
     public class StoreDto
     {
+        public int Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 

@@ -64,7 +64,14 @@ namespace Stockyo.Application.Services
                 return false;
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
+            var decodedToken = System.Net.WebUtility.UrlDecode(dto.Token);
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, dto.NewPassword);
+            if (!result.Succeeded)
+            {
+                // اجمعي الأخطاء ورجعيها عشان تشوفيها في الـ Postman
+                var error = string.Join(", ", result.Errors.Select(e => e.Description));
+                return false;
+            }
 
             return result.Succeeded;
         }
@@ -216,13 +223,13 @@ namespace Stockyo.Application.Services
 
             await _userManager.AddToRoleAsync(newUser, "BusinessOwner");
 
-            var jwtToken = await GenerateJWTToken(user!);
+            var jwtToken = await GenerateJWTToken(newUser);
 
             var refreshToken = new RefreshToken()
             {
                 Token = GenerateRefreshToken(),
                 ExpiresAt = DateTime.UtcNow.AddDays(7),
-                UserId = user!.Id,
+                UserId = newUser!.Id,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -231,7 +238,7 @@ namespace Stockyo.Application.Services
 
             return new AuthResultDto()
             {
-                UserName = user.UserName!,
+                UserName = newUser.UserName!,
                 IsAuthenticated = true,
                 Role = "BusinessOwner",
                 Message = "Registered Successfully",

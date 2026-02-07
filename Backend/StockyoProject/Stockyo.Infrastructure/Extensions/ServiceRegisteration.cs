@@ -77,6 +77,7 @@ namespace Stockyo.Infrastructure.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IStoreService, StoreService>();      
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddHttpContextAccessor();
             services.AddDistributedMemoryCache();

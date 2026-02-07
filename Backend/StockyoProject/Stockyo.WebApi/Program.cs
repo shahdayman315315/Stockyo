@@ -20,6 +20,15 @@ namespace Stockyo.WebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddInfrastructureServices(builder.Configuration);
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFlutter", policy =>
+                {
+                    policy.AllowAnyOrigin()   // ???? ???????? ?? ?? ???? (????? ???????)
+                          .AllowAnyMethod()   // ???? ??? ????? ??????? (GET, POST, etc.)
+                          .AllowAnyHeader();  // ???? ??? ??? Headers
+                });
+            });
 
             var app = builder.Build();
 
@@ -39,6 +48,7 @@ namespace Stockyo.WebApi
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowFlutter");
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

@@ -28,7 +28,7 @@ namespace Stockyo.WebApi.Controllers
             if (!result.IsSuccess)
                 return BadRequest(result.Message);
 
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         // GET: api/categories/store/5
@@ -40,7 +40,7 @@ namespace Stockyo.WebApi.Controllers
             if (!result.IsSuccess)
                 return BadRequest(result.Message);
 
-            return Ok(result);
+            return Ok(result.Data);
         }
     }
 }

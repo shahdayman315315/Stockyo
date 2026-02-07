@@ -33,10 +33,13 @@ namespace Stockyo.Infrastructure.Data
                .HasForeignKey(rt => rt.UserId)
                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Store>()
-                .HasMany(s => s.Products)
-                .WithOne()
-                .HasForeignKey(p => p.StoreId);
+           
+
+            builder.Entity<Product>()
+        .HasOne(p => p.Store)         // المنتج له متجر واحد
+        .WithMany(s => s.Products)    // المتجر له منتجات كتير
+        .HasForeignKey(p => p.StoreId) // استخدم العمود ده كـ FK
+        .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Store>()
                 .HasMany(s => s.Categories)

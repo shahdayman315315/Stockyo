@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -19,7 +20,8 @@ namespace Stockyo.Domain.Interfaces
         Task<T> AddAsync(T item, CancellationToken cancellationToken = default);
 
         Task AddRangeAsync(IEnumerable<T> values, CancellationToken cancellationToken = default);
-
+        void RemoveRange(IEnumerable<T> entities);
+        
         void UpdateAsync(T item);
 
         void DeleteAsync(T item);

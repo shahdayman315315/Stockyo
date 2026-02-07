@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Stockyo.Application.Helper;
 using Stockyo.Application.Interfaces;
 using Stockyo.Domain.DTOs;
@@ -27,7 +28,7 @@ namespace Stockyo.Application.Services
         }
         public async Task<Result<StoreDto>> CreateStoreAsync(string userId,StoreDto dto)
         {
-            var existStore=_unitOfWork.Stores.Query.FirstOrDefault(s=>s.UserId==userId);
+            var existStore=await _unitOfWork.Stores.Query.FirstOrDefaultAsync(s=>s.UserId==userId);
 
             if (existStore is not null)
             {
@@ -40,7 +41,8 @@ namespace Stockyo.Application.Services
             await _unitOfWork.Stores.AddAsync(store);
             await _unitOfWork.SaveChangesAsync();
 
-            return Result<StoreDto>.Success(dto);
+            var storeDto=_mapper.Map<StoreDto>(store);    
+            return Result<StoreDto>.Success(storeDto);
         }
     }
 }

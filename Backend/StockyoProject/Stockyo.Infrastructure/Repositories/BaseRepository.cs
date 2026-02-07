@@ -62,5 +62,10 @@ namespace Stockyo.Infrastructure.Repositories
         {
             _dbSet.Update(item);
         }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
     }
 }
