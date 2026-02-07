@@ -4,6 +4,7 @@ using Stockyo.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -110,7 +111,11 @@ namespace Stockyo.Infrastructure.Data
                 .HasForeignKey(ai => ai.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-         
+            builder.Entity<AISuggestions>()
+        .Property(p => p.SuggestedValue)
+        .HasColumnType("decimal(18,2)");
+
+
             builder.Entity<Notification>()
                 .HasOne(n => n.User)
                 .WithMany()

@@ -75,7 +75,8 @@ namespace Stockyo.Infrastructure.Extensions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAuthService, AuthService>();
-           
+            services.AddScoped<IStoreService, StoreService>();      
+            services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddHttpContextAccessor();
             services.AddDistributedMemoryCache();

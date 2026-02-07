@@ -4,6 +4,7 @@ using Stockyo.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,7 +28,15 @@ namespace Stockyo.Infrastructure.Repositories
             await _dbSet.AddAsync(item,cancellationToken);
             return item;
         }
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null)
+        {
+            IQueryable<T> query = _dbSet;
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
 
+            return await query.Where(criteria).ToListAsync();
+        }
         public async Task AddRangeAsync(IEnumerable<T> values, CancellationToken cancellationToken = default)
         {
             await _dbSet.AddRangeAsync(values,cancellationToken);
