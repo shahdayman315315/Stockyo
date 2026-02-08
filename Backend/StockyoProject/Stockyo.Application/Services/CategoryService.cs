@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Stockyo.Application.Helper;
 using Stockyo.Application.Interfaces;
 using Stockyo.Domain.DTOs;
@@ -33,8 +34,9 @@ namespace Stockyo.Application.Services
        
         public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesByStoreIdAsync(int storeId)
         {
-            
-            var categories = await _unitOfWork.Categories.FindAllAsync(c => c.StoreId == storeId);
+
+            var categories =  await _unitOfWork.Categories.Query.Where(c => c.StoreId == storeId).ToListAsync();
+
 
             var resultDto = _mapper.Map<IEnumerable<CategoryDto>>(categories);
 

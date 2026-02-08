@@ -75,8 +75,8 @@ namespace Stockyo.Application.Services
 
                         var name = reader[0]?.ToString();
                         var barcode = reader[1]?.ToString();
-                        var categoryId = (int)reader[2];
-                        var reorderLevel = (int)reader[3];
+                        var categoryId = Convert.ToInt32(reader[2]);
+                        var reorderLevel = Convert.ToInt32(reader[3]);
 
                         if (processedBarcodes.Contains(barcode))
                         {

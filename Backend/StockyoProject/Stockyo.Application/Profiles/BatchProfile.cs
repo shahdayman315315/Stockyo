@@ -9,14 +9,11 @@ using System.Threading.Tasks;
 
 namespace Stockyo.Application.Profiles
 {
-    public class ProductProfie:Profile
+    public class BatchProfile:Profile
     {
-        public ProductProfie()
+        public BatchProfile()
         {
-            CreateMap<ProductDto, Product>()
-               .ForMember(dest => dest.Id, opt => opt.Ignore());
-            
-            CreateMap<Product,ProductDto>();
+            CreateMap<BatcheDto,Batche>().ReverseMap();
         }
     }
 }
