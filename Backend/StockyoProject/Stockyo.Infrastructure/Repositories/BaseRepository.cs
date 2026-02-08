@@ -4,6 +4,7 @@ using Stockyo.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace Stockyo.Infrastructure.Repositories
             await _dbSet.AddAsync(item,cancellationToken);
             return item;
         }
-
+       
         public async Task AddRangeAsync(IEnumerable<T> values, CancellationToken cancellationToken = default)
         {
             await _dbSet.AddRangeAsync(values,cancellationToken);
@@ -52,6 +53,11 @@ namespace Stockyo.Infrastructure.Repositories
         public void UpdateAsync(T item)
         {
             _dbSet.Update(item);
+        }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
         }
     }
 }
