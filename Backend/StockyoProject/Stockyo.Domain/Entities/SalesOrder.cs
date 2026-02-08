@@ -17,7 +17,7 @@ namespace Stockyo.Domain.Entities
         public virtual Store Store { get; set; }
 
         public ApplicationUser? User { get; set; }
-        public decimal TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }//total price
         public DateTime CreatedAt { get; set; } 
         public virtual ICollection<SalesOrderItem> SalesOrderItems { get; set; } = new List<SalesOrderItem>();
     }

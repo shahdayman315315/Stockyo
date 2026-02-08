@@ -23,7 +23,8 @@ namespace Stockyo.WebApi.Controllers
         {
             return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
-        [HttpPost("create")]
+
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -36,7 +37,6 @@ namespace Stockyo.WebApi.Controllers
             return Ok(result.Data); 
         }
 
-    // api/Categories/store/5?pageNumber=1&pageSize=10&search=milk
      
         [HttpGet("store/{storeId}")]
         public async Task<IActionResult> GetAll(int storeId, [FromQuery] int pagenumber = 1, [FromQuery] int pagesize = 10, [FromQuery] string? search = null)
@@ -60,7 +60,7 @@ namespace Stockyo.WebApi.Controllers
             return Ok(result.Data);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] CategoryDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -73,7 +73,7 @@ namespace Stockyo.WebApi.Controllers
             return Ok(result.Data);
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetCurrentUserId();

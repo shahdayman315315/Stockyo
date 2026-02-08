@@ -12,6 +12,7 @@ namespace Stockyo.Domain.Entities
         public int Id { get; set; }
 
         public int OrderId { get; set; }
+
         [ForeignKey("OrderId")]
         public virtual SalesOrder Order { get; set; } 
         public int ProductId { get; set; }
