@@ -16,7 +16,6 @@ namespace Stockyo.Domain.Interfaces
 
         Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
         Task<T> AddAsync(T item, CancellationToken cancellationToken = default);
 
         Task AddRangeAsync(IEnumerable<T> values, CancellationToken cancellationToken = default);

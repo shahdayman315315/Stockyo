@@ -18,7 +18,7 @@ namespace Stockyo.Domain.Interfaces
         IBaseRepository<SalesOrderItem> SalesOrderItems { get; }
         IBaseRepository<LostSales> LostSales {  get; }
         IBaseRepository<Notification> Notifications {  get; }
-        IBaseRepository<Batche> Batches {  get; }
+        IBaseRepository<Batch> Batches {  get; }
 
         IBaseRepository<RefreshToken> RefreshTokens { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken=default);

@@ -22,14 +22,14 @@ namespace Stockyo.Infrastructure.Repositories
         private Lazy<IBaseRepository<SalesOrderItem>> _salesOrderItems;
         private Lazy<IBaseRepository<LostSales>> _lostSales;
         private Lazy<IBaseRepository<Notification>> _notifications;
-        private Lazy<IBaseRepository<Batche>> _batches;
+        private Lazy<IBaseRepository<Batch>> _batches;
         private Lazy<IBaseRepository<RefreshToken>> _refreshTokens;
 
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
             _aiSuggestions=CreateRepository<IBaseRepository<AISuggestions>,BaseRepository<AISuggestions>>();
-            _batches = CreateRepository<IBaseRepository<Batche>, BaseRepository<Batche>>();
+            _batches = CreateRepository<IBaseRepository<Batch>, BaseRepository<Batch>>();
             _notifications = CreateRepository<IBaseRepository<Notification>, BaseRepository<Notification>>();
             _lostSales = CreateRepository<IBaseRepository<LostSales>, BaseRepository<LostSales>>();
             _salesOrderItems = CreateRepository<IBaseRepository<SalesOrderItem>, BaseRepository<SalesOrderItem>>();
@@ -63,7 +63,7 @@ namespace Stockyo.Infrastructure.Repositories
 
         public IBaseRepository<Notification> Notifications => _notifications.Value;
 
-        public IBaseRepository<Batche> Batches => _batches.Value;
+        public IBaseRepository<Batch> Batches => _batches.Value;
 
         public IBaseRepository<RefreshToken> RefreshTokens => _refreshTokens.Value;
 

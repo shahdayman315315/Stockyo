@@ -8,7 +8,11 @@ namespace Stockyo.Application.Profiles
     {
         public CategoryProfile()
         {
-            CreateMap<CategoryDto, Category>().ReverseMap();
+            
+            CreateMap<CategoryDto, Category>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<Category, CategoryDto>();
         }
     }
 }

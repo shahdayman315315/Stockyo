@@ -10,6 +10,10 @@ namespace Stockyo.Application.Interfaces
 {
     public interface IStoreService
     {
-        Task<Result<StoreDto>> CreateStoreAsync(string userd,StoreDto dto);
+        Task<Result<StoreDto>> CreateStoreAsync(string userId, StoreDto dto);
+        Task<Result<StoreDto>> GetMyStoreAsync(string userId);
+        Task<Result<bool>> UpdateStoreAsync(StoreDto dto, string userId);
+        Task<Result<bool>> DeleteStoreAsync(int storeId, string userId);
+
     }
 }

@@ -20,7 +20,7 @@ namespace Stockyo.Domain.Entities
 
         public int BatchId { get; set; }
      
-        public  Batche Batch { get; set; }
+        public  Batch Batch { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
     }

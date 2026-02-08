@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stockyo.Application.Interfaces;
 using Stockyo.Domain.DTOs;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Stockyo.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] 
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -16,31 +19,69 @@ namespace Stockyo.WebApi.Controllers
             _categoryService = categoryService;
         }
 
-        // POST: api/categories
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryDto dto)
+        private string GetCurrentUserId()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromBody] CategoryDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await _categoryService.CreateCategoryAsync(dto);
+            var userId = GetCurrentUserId();
+            var result = await _categoryService.CreateCategoryAsync(dto, userId);
 
-            if (!result.IsSuccess)
-                return BadRequest(result.Message);
+            if (!result.IsSuccess) return BadRequest(result.Message);
+
+            return Ok(result.Data); 
+        }
+
+    // api/Categories/store/5?pageNumber=1&pageSize=10&search=milk
+     
+        [HttpGet("store/{storeId}")]
+        public async Task<IActionResult> GetAll(int storeId, [FromQuery] int pagenumber = 1, [FromQuery] int pagesize = 10, [FromQuery] string? search = null)
+        {
+            var userId = GetCurrentUserId();
+            var result = await _categoryService.GetAllCategoriesAsync(storeId, userId, pagenumber, pagesize, search);
+
+            if (!result.IsSuccess) return BadRequest(result.Message);
 
             return Ok(result.Data);
         }
 
-        // GET: api/categories/store/5
-        [HttpGet("store/{storeId}")]
-        public async Task<IActionResult> GetByStore(int storeId)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = await _categoryService.GetCategoriesByStoreIdAsync(storeId);
+            var userId = GetCurrentUserId();
+            var result = await _categoryService.GetCategoryByIdAsync(id, userId);
 
-            if (!result.IsSuccess)
-                return BadRequest(result.Message);
+            if (!result.IsSuccess) return NotFound(result.Message);
 
             return Ok(result.Data);
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CategoryDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var userId = GetCurrentUserId();
+            var result = await _categoryService.UpdateCategoryAsync(id, dto, userId);
+
+            if (!result.IsSuccess) return BadRequest(result.Message);
+
+            return Ok(result.Data);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userId = GetCurrentUserId();
+            var result = await _categoryService.DeleteCategoryAsync(id, userId);
+
+            if (!result.IsSuccess) return BadRequest(result.Message);
+
+            return Ok(result.Data); 
         }
     }
 }
