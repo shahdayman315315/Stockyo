@@ -13,7 +13,9 @@ namespace Stockyo.Domain.Entities
         public int StoreId { get; set; }
         public string? UserId { get; set; }
 
-      
+        [ForeignKey("StoreId")]
+        public virtual Store Store { get; set; }
+
         public ApplicationUser? User { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; } 

@@ -17,7 +17,7 @@ namespace Stockyo.Infrastructure.Data
         public DbSet<Store> Stores { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Batche> Batches { get; set; }
+        public DbSet<Batch> Batches { get; set; }
         public DbSet<SalesOrder> SalesOrders { get; set; }
         public DbSet<SalesOrderItem> SalesOrderItems { get; set; }
         public DbSet<LostSales> LostSales { get; set; }
@@ -36,9 +36,9 @@ namespace Stockyo.Infrastructure.Data
            
 
             builder.Entity<Product>()
-        .HasOne(p => p.Store)         // المنتج له متجر واحد
-        .WithMany(s => s.Products)    // المتجر له منتجات كتير
-        .HasForeignKey(p => p.StoreId) // استخدم العمود ده كـ FK
+        .HasOne(p => p.Store)         
+        .WithMany(s => s.Products)   
+        .HasForeignKey(p => p.StoreId) 
         .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Store>()
@@ -58,14 +58,14 @@ namespace Stockyo.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
            
+            
             builder.Entity<Product>()
-                .HasMany<Batche>()
-                .WithOne(b => b.Product)
-                .HasForeignKey(b => b.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+    .HasMany(p => p.Batches)
+    .WithOne(b => b.Product)
+    .HasForeignKey(b => b.ProductId)
+    .OnDelete(DeleteBehavior.Restrict);
 
-         
-            builder.Entity<Batche>()
+            builder.Entity<Batch>()
                 .Property(b => b.CostPrice)
                 .HasPrecision(18, 2);
 
@@ -76,6 +76,7 @@ namespace Stockyo.Infrastructure.Data
                 .HasForeignKey(i => i.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
             builder.Entity<SalesOrder>()
                 .HasOne(o => o.User)
                 .WithMany()
@@ -83,8 +84,15 @@ namespace Stockyo.Infrastructure.Data
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<SalesOrder>()
+    .HasOne(o => o.Store)
+    .WithMany()
+    .HasForeignKey(o => o.StoreId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SalesOrder>()
                .Property(s => s.TotalAmount)
                .HasColumnType("decimal(18,2)");  
+
 
             builder.Entity<SalesOrderItem>()
                 .HasOne(i => i.Product)
@@ -130,8 +138,10 @@ namespace Stockyo.Infrastructure.Data
                 .HasIndex(p => new { p.StoreId, p.Barcode })
                 .IsUnique();
 
-            builder.Entity<Batche>()
+            builder.Entity<Batch>()
                 .HasIndex(b => new { b.ProductId, b.ExpiryDate });
+
+           
         }
 
     }

@@ -7,17 +7,12 @@ using System.Threading.Tasks;
 
 namespace Stockyo.Domain.DTOs
 {
-    public class CategoryDto
+    public class CreateSalesOrderDto
     {
-        public int Id { get; set; }
-
-        [Required(ErrorMessage = "Category Name is required")]
-        public string Name { get; set; }
-
-        public string Description { get; set; } = string.Empty;
-
         [Required]
         public int StoreId { get; set; }
 
+        [Required]
+        public List<SalesOrderItemDto> Items { get; set; } = new List<SalesOrderItemDto>();
     }
 }

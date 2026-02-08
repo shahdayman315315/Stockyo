@@ -18,20 +18,52 @@ namespace Stockyo.WebApi.Controllers
         {
             _storeService = storeService;
         }
-
-        [HttpPost]
+        private string GetCurrentUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        // api/Stores/create
+        [HttpPost("create")] 
         public async Task<IActionResult> Create(StoreDto dto)
         {
-            var userId=User.Claims.FirstOrDefault(c=>c.Type==ClaimTypes.NameIdentifier)?.Value;
+            if (!ModelState.IsValid) return BadRequest(ModelState); 
 
-            var result=await _storeService.CreateStoreAsync(userId!, dto);
+           
+            var result = await _storeService.CreateStoreAsync(GetCurrentUserId(), dto);
 
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result.Message);
-            }
+            if (!result.IsSuccess) return BadRequest(result.Message);
+            return Ok(result.Data);
+        }
+
+
+        //  api/Stores/my-store
+        [HttpGet("my-store")]
+        public async Task<IActionResult> GetMyStore()
+        {
+            var result = await _storeService.GetMyStoreAsync(GetCurrentUserId());
+            if (!result.IsSuccess) return NotFound(result.Message); 
+            return Ok(result.Data);
+        }
+
+        // PUT: api/Stores/update
+        [HttpPut("update")]
+        public async Task<IActionResult> Update(StoreDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _storeService.UpdateStoreAsync(dto, GetCurrentUserId());
+            if (!result.IsSuccess) return BadRequest(result.Message);
 
             return Ok(result.Data);
         }
+
+        // DELETE: api/Stores/delete/5
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _storeService.DeleteStoreAsync(id, GetCurrentUserId());
+            if (!result.IsSuccess) return BadRequest(result.Message);
+
+            return Ok(result.Data);
+        }
+
+
     }
 }

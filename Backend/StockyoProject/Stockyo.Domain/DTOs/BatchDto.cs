@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Stockyo.Domain.DTOs
 {
-    public class BatcheDto
+    public class BatchDto
     {
 
         public int Id { get; set; }

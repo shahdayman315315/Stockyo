@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 
 namespace Stockyo.Application.Profiles
 {
-    public class StoreProfile:Profile
+    public class StoreProfile : Profile
     {
         public StoreProfile()
         {
-            CreateMap<StoreDto,Store>().ReverseMap();
+           
+            CreateMap<StoreDto, Store>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<Store, StoreDto>();
         }
     }
 }
