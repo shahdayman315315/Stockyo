@@ -10,10 +10,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -24,10 +24,12 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        # We point this to the specific folder or solution file
+        run: dotnet build Stockyo/Backend/StockyoProject --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        # We also point publish to the correct project folder
+        run: dotnet publish Stockyo/Backend/StockyoProject -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -62,4 +64,5 @@ jobs:
           app-name: 'Stockyo-App'
           slot-name: 'Production'
           package: .
+
           
