@@ -84,6 +84,7 @@ namespace Stockyo.Application.Services
             if (user is null || !await _userManager.CheckPasswordAsync(user, dto.Password))
             {
                 authResult.Message = "Incorrect Email or Password.";
+                return authResult;
             }
 
             var jwtToken = await GenerateJWTToken(user!);
@@ -169,33 +170,42 @@ namespace Stockyo.Application.Services
             return authResultDto;
         }
 
-        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
         {
-            var tokenValidationParameters = new TokenValidationParameters()
+            try
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateIssuerSigningKey = true,
-                ValidateLifetime = false,
-                ValidIssuer = _jwt.Issuer,
-                ValidAudience = _jwt.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(
+                var tokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = false,
+                    ValidIssuer = _jwt.Issuer,
+                    ValidAudience = _jwt.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_jwt.Key))
-            };
+                };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+                var tokenHandler = new JwtSecurityTokenHandler();
 
-            SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+                SecurityToken securityToken;
+                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
 
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
-            if (jwtSecurityToken is null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
-                    StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new SecurityTokenException("Invalid Token");
+                var jwtSecurityToken = securityToken as JwtSecurityToken;
+                if (jwtSecurityToken is null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                        StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new SecurityTokenException("Invalid Token");
+                }
+
+                return principal;
             }
 
-            return principal;
+            catch(Exception ex)
+            {
+                return null;
+            }
+
         }
         public async Task<AuthResultDto> RegisterAsync(RegisterDto dto)
         {

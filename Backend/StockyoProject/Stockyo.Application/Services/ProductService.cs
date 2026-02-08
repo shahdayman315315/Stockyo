@@ -77,6 +77,7 @@ namespace Stockyo.Application.Services
                         var barcode = reader[1]?.ToString();
                         var categoryId = Convert.ToInt32(reader[2]);
                         var reorderLevel = Convert.ToInt32(reader[3]);
+                        var price= Convert.ToDecimal(reader[4]);
 
                         if (processedBarcodes.Contains(barcode))
                         {
@@ -93,7 +94,8 @@ namespace Stockyo.Application.Services
                             Barcode = barcode,
                             StoreId = storeId,
                             CategoryId = categoryId,
-                            ReorderLevel = reorderLevel
+                            ReorderLevel = reorderLevel,
+                            Price = price
                         };
 
                         var result = await ValidateAndMapProductAsync(productDto, userId);

@@ -25,6 +25,10 @@ namespace Stockyo.Domain.DTOs
 
         [Required]
         public int ReorderLevel { get; set; }
+
+        [Required] 
+        public decimal Price { get; set; }
+
         public string Classification { get; set; } = string.Empty;
     }
 }
