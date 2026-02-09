@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory & Sales Prediction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .prediction-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .prediction-result h2 {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .prediction-value {
+            color: white;
+            font-size: 36px;
+            font-weight: 700;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .prediction-label {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sales Prediction</h1>
+        <p class="subtitle">Enter your data to get AI-powered predictions</p>
+        
+        <form id="dataForm">
+            <div class="form-group">
+                <label for="inventory_level">Inventory Level</label>
+                <input type="number" id="inventory_level" name="inventory_level" required step="1" min="0" placeholder="Enter inventory level">
+            </div>
+            
+            <div class="form-group">
+                <label for="units_sold">Units Sold</label>
+                <input type="number" id="units_sold" name="units_sold" required step="1" min="0" placeholder="Enter units sold">
+            </div>
+            
+            <div class="form-group">
+                <label for="units_ordered">Units Ordered</label>
+                <input type="number" id="units_ordered" name="units_ordered" required step="1" min="0" placeholder="Enter units ordered">
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Price ($)</label>
+                <input type="number" id="price" name="price" required step="0.01" min="0" placeholder="Enter price">
+            </div>
+            
+            <div class="form-group">
+                <label for="discount">Discount (%)</label>
+                <input type="number" id="discount" name="discount" required step="0.01" min="0" max="100" placeholder="Enter discount percentage">
+            </div>
+            
+            <div class="form-group">
+                <label for="competitor_pricing">Competitor Pricing ($)</label>
+                <input type="number" id="competitor_pricing" name="competitor_pricing" required step="0.01" min="0" placeholder="Enter competitor pricing">
+            </div>
+            
+            <button type="submit" id="submitBtn">Get Prediction</button>
+        </form>
+        
+        <div id="predictionResult" class="prediction-result">
+            <h2>Prediction Result</h2>
+            <div class="prediction-value" id="predictionValue">-</div>
+            <div class="prediction-label">Predicted Value</div>
+        </div>
+        
+        <div id="message" class="message"></div>
+    </div>
+    
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const messageDiv = document.getElementById('message');
+            const predictionDiv = document.getElementById('predictionResult');
+            const predictionValue = document.getElementById('predictionValue');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Hide previous results
+            messageDiv.style.display = 'none';
+            predictionDiv.style.display = 'none';
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Processing...';
+            
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Display prediction
+                    predictionValue.textContent = result.prediction.toFixed(2);
+                    predictionDiv.style.display = 'block';
+                    
+                    // Show success message
+                    messageDiv.textContent = result.message;
+                    messageDiv.className = 'message success';
+                    messageDiv.style.display = 'block';
+                    
+                    // Hide message after 3 seconds
+                    setTimeout(() => {
+                        messageDiv.style.display = 'none';
+                    }, 3000);
+                } else {
+                    throw new Error(result.message || 'Prediction failed');
+                }
+            } catch (error) {
+                messageDiv.textContent = error.message || 'Error processing prediction. Please try again.';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+                predictionDiv.style.display = 'none';
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Get Prediction';
+            }
+        });
+    </script>
+</body>
+</html>
