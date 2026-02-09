@@ -15,8 +15,7 @@ namespace Stockyo.Application.Profiles
         {
             // تحويل الفاتورة للعرض
             CreateMap<SalesOrder, SalesOrderResultDto>()
-                .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.SalesOrderItems));
 
             // تحويل تفاصيل المنتج للعرض

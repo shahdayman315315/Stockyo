@@ -13,7 +13,10 @@ namespace Stockyo.Application.Profiles
     {
         public BatchProfile()
         {
-            CreateMap<BatchDto,Batch>().ReverseMap();
+            CreateMap<BatchDto, Batch>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<Batch, BatchDto>();
         }
     }
 }

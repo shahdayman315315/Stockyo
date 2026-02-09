@@ -27,15 +27,17 @@ namespace Stockyo.Application.Services
         {
            
             var existstore = await _unitOfWork.Stores.Query.FirstOrDefaultAsync(s => s.Id == dto.StoreId && s.UserId == userId);
-            if (existstore is null) return Result<SalesOrderResultDto>.Failure("Store not found.");
-//نعمل فاتورة
+            
+            if (existstore is null) 
+                return Result<SalesOrderResultDto>.Failure("Store not found.");
+               //نعمل فاتورة
+
             var salesOrder = new SalesOrder
             {
                 StoreId = dto.StoreId,
                 UserId = userId,
-                CreatedAt = DateTime.UtcNow,
-                TotalAmount = 0,
-                SalesOrderItems = new List<SalesOrderItem>()
+                CreatedAt = DateTime.UtcNow
+                
             };
 
             //  نمشي على كل منتج  في الفاتورة
@@ -49,6 +51,7 @@ namespace Stockyo.Application.Services
 
                 // هل فيه رصيد كافي توتل
                 var totalStock = product.Batches.Where(b => b.Quantity > 0).Sum(b => b.Quantity);
+
                 if (totalStock < itemDto.Quantity)
                     return Result<SalesOrderResultDto>.Failure($"Not enough stock for product '{product.Name}'. Available: {totalStock}, Requested: {itemDto.Quantity}");
 
@@ -80,6 +83,7 @@ namespace Stockyo.Application.Services
                         remainingQtyToDeduct -= batch.Quantity;
                         batch.Quantity = 0; 
                     }
+
                     var orderItem = new SalesOrderItem
                     {
                         ProductId = product.Id,
@@ -102,14 +106,9 @@ namespace Stockyo.Application.Services
             await _unitOfWork.SalesOrders.AddAsync(salesOrder);
             await _unitOfWork.SaveChangesAsync();
 
-            //  نرجع النتيجة لليوزر
-            var createdOrder = await _unitOfWork.SalesOrders.Query
-                .Include(o => o.Store)
-                .Include(o => o.User)
-                .Include(o => o.SalesOrderItems).ThenInclude(i => i.Product)
-                .FirstOrDefaultAsync(o => o.Id == salesOrder.Id);
 
-            var resultDto = _mapper.Map<SalesOrderResultDto>(createdOrder);
+            var resultDto = _mapper.Map<SalesOrderResultDto>(salesOrder);
+
             return Result<SalesOrderResultDto>.Success(resultDto);
         }
 
@@ -118,16 +117,16 @@ namespace Stockyo.Application.Services
         {
         
             var isOwner = await _unitOfWork.Stores.Query.AnyAsync(s => s.Id == storeId && s.UserId == userId);
+
             if (!isOwner) return Result<PagedResult<SalesOrderResultDto>>.Failure("Access denied.");
 
             var query = _unitOfWork.SalesOrders.Query
                 .Where(o => o.StoreId == storeId)
-                .Include(o => o.Store)
-                .Include(o => o.User)
                 .OrderByDescending(o => o.CreatedAt) // الأحدث الأول
                 .AsNoTracking();
 
             var totalCount = await query.CountAsync();
+
             var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
             var dtos = _mapper.Map<List<SalesOrderResultDto>>(items);
@@ -145,14 +144,14 @@ namespace Stockyo.Application.Services
         public async Task<Result<SalesOrderResultDto>> GetSalesOrderByIdAsync(int id, string userId)
         {
             var order = await _unitOfWork.SalesOrders.Query
-                .Include(o => o.Store)
-                .Include(o => o.User)
                 .Include(o => o.SalesOrderItems).ThenInclude(i => i.Product)
                 .FirstOrDefaultAsync(o => o.Id == id && o.Store.UserId == userId);
 
-            if (order is null) return Result<SalesOrderResultDto>.Failure("Order not found.");
+            if (order is null) 
+                return Result<SalesOrderResultDto>.Failure("Order not found.");
 
             var dto = _mapper.Map<SalesOrderResultDto>(order);
+
             return Result<SalesOrderResultDto>.Success(dto);
         }
 
@@ -165,7 +164,8 @@ namespace Stockyo.Application.Services
                 .Include(o => o.SalesOrderItems)
                 .FirstOrDefaultAsync(o => o.Id == id && o.Store.UserId == userId);
 
-            if (order is null) return Result<bool>.Failure("Order not found.");
+            if (order is null)
+                return Result<bool>.Failure("Order not found.");
 
             //  (Reverse FIFO)
             foreach (var item in order.SalesOrderItems)

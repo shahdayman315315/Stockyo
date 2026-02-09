@@ -9,9 +9,6 @@ namespace Stockyo.Domain.DTOs
     public class SalesOrderResultDto
     {
         public int Id { get; set; }
-        public int StoreId { get; set; }
-        public string StoreName { get; set; }
-        public string UserName { get; set; } 
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; }
 

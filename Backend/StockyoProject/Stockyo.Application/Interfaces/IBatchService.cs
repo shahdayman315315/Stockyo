@@ -15,5 +15,13 @@ namespace Stockyo.Application.Interfaces
         Task<Result<BatchDto>> GetBatcheById(int id,string userId);
 
         Task<Result<IEnumerable<BatchDto>>> GetBatchesByProductAsync(int storeId, int productId, string userId);
+
+        Task<Result<BatchDto>> UpdateBatchAsync(int id, BatchDto batchDto, string userId);
+        Task<Result<bool>> DeleteBatchAsync(int id, string userId);
+        Task<Result<int>> CalculateTotalStockAsync(int storeId, int productId, string userId);
+
+        Task<Result<IEnumerable<ProductNearingExpiryDto>>> GetProductsNearingExpiryDateAsync(int storeId, string userId, int days=30);
+
+
     }
 }
