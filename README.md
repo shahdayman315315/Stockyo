@@ -3,6 +3,7 @@
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-blueviolet.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_Architecture-blue.svg)]()
 [![SaaS Multi-Tenant](https://img.shields.io/badge/SaaS-Multi--Tenant-orange.svg)]()
+[![Repository Pattern](https://img.shields.io/badge/Pattern-Repository_%26_UoW-green.svg)]()
 
 Stockyo is an Enterprise-grade, Multi-Tenant Cloud-Ready Software-as-a-Service (SaaS) platform engineered to optimize supply chains and resolve critical retail inefficiencies for small and medium-sized businesses (SMBs). Built on **.NET 8** following **Clean Architecture** principles, the platform acts as an intelligent assistant that eliminates capital stagnation (Overstocking) and prevents missed revenue opportunities (Out-of-Stock) through algorithmic inventory control and real-time data auditing.
 
@@ -60,7 +61,7 @@ The backend strictly adheres to **Clean Architecture** boundaries, enforcing a d
 | :--- | :--- | :--- |
 | **Presentation** | `Stockyo.WebAPI` | API Controllers, SignalR Hub Configurations, Custom Middleware, App Settings |
 | **Infrastructure** | `Stockyo.Infrastructure` | EF Core Tenant DbContext, Migrations, Repository Implementations |
-| **Application** | `Stockyo.Application` | All Services, Token Services, profiles, FluentValidators |
+| **Application** | `Stockyo.Application` | Use-Case Services, DTOs, Repository Interfaces, AutoMapper Profiles |
 | **Domain** | `Stockyo.Domain` | Enterprise Entities (Stores, Products, Batches), Core Business Rules, Enums |
 
 ### Key Design Patterns & Practices Implemented
@@ -99,7 +100,7 @@ All endpoints expose standard RESTful semantics utilizing proper HTTP verbs, con
 ## 📂 Project Folder Structure
 
 * **Stockyo.Domain/**: Core Business Models, Aggregate Roots, Relational Multi-Tenant Domain Entities
-* **Stockyo.Application/**: All Services, Token Services, profiles, Validation & Business Use Cases
+* **Stockyo.Application/**: Use-Case Services, DTOs, Repository Interfaces, AutoMapper , Profiles, Validation & Business Use Cases
 * **Stockyo.Infrastructure/**: Tenant-Scoped EF Core Context, Migrations, Identity Service Layer, SignalR Hub implementations
 * **Stockyo.WebAPI/**: REST Controllers, Middleware pipelines, Routing configurations, Program.cs setup
 
