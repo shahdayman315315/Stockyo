@@ -2,10 +2,9 @@
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-blueviolet.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_Architecture-blue.svg)]()
-[![CQRS](https://img.shields.io/badge/Pattern-CQRS_%2F_MediatR-green.svg)]()
 [![SaaS Multi-Tenant](https://img.shields.io/badge/SaaS-Multi--Tenant-orange.svg)]()
 
-Stockyo is an Enterprise-grade, Multi-Tenant Cloud-Ready Software-as-a-Service (SaaS) platform engineered to optimize supply chains and resolve critical retail inefficiencies for small and medium-sized businesses (SMBs). Built on **.NET 8** following **Clean Architecture**, **CQRS**, and **Domain-Driven Design (DDD)** principles, the platform acts as an intelligent assistant that eliminates capital stagnation (Overstocking) and prevents missed revenue opportunities (Out-of-Stock) through algorithmic inventory control and real-time data auditing.
+Stockyo is an Enterprise-grade, Multi-Tenant Cloud-Ready Software-as-a-Service (SaaS) platform engineered to optimize supply chains and resolve critical retail inefficiencies for small and medium-sized businesses (SMBs). Built on **.NET 8** following **Clean Architecture** principles, the platform acts as an intelligent assistant that eliminates capital stagnation (Overstocking) and prevents missed revenue opportunities (Out-of-Stock) through algorithmic inventory control and real-time data auditing.
 
 ---
 
@@ -60,13 +59,13 @@ The backend strictly adheres to **Clean Architecture** boundaries, enforcing a d
 | Layer Name | Project Namespace | Primary Responsibilities & Components |
 | :--- | :--- | :--- |
 | **Presentation** | `Stockyo.WebAPI` | API Controllers, SignalR Hub Configurations, Custom Middleware, App Settings |
-| **Infrastructure** | `Stockyo.Infrastructure` | EF Core Tenant DbContext, Migrations, Repository Implementations, Token Services |
-| **Application** | `Stockyo.Application` | CQRS Commands/Queries, MediatR Handlers, Core Use Cases, FluentValidators |
+| **Infrastructure** | `Stockyo.Infrastructure` | EF Core Tenant DbContext, Migrations, Repository Implementations |
+| **Application** | `Stockyo.Application` | All Services, Token Services, profiles, FluentValidators |
 | **Domain** | `Stockyo.Domain` | Enterprise Entities (Stores, Products, Batches), Core Business Rules, Enums |
 
 ### Key Design Patterns & Practices Implemented
 
-1. **CQRS Pattern (via MediatR):** Completely bifurcates write mutations (`CreateSalesOrderCommand`) from data telemetry views (`GetStoreInventoryQuery`), enhancing query execution speeds and overall API scalability.
+1. **Result Pattern:** to manage responses away from exceptions in an unified way.
     
 2. **Repository & Unit of Work Patterns:** Abstracts data persistence mechanisms away from application use cases, presenting a clean collection-like layer while wrapping multi-entity updates inside safe transactional blocks.
     
@@ -88,19 +87,19 @@ All endpoints expose standard RESTful semantics utilizing proper HTTP verbs, con
 
 | HTTP Method | Endpoint Path | Primary Purpose | Role Authorization |
 | :--- | :--- | :--- | :--- |
-| **POST** | `/api/v1/auth/register` | Registers a new Merchant Store profile (New Tenant) | Public |
-| **POST** | `/api/v1/auth/login` | Validates credentials; returns JWT, Tenant ID & Refresh Token | Public |
-| **GET** | `/api/v1/products` | Lists store-specific catalog (Automated tenant filter) | Authenticated |
-| **POST** | `/api/v1/batches` | Ingests a new incoming stock lot with production/expiry data | Inventory Manager |
-| **POST** | `/api/v1/sales` | Commits sales order (Evaluates batch stock & triggers alerts) | Cashier / Owner |
-| **POST** | `/api/v1/lost-sales` | Records missed consumer demand parameters manually/automatically | Cashier |
+| **POST** | `/api/auth/register` | Registers a new Merchant Store profile (New Tenant) | Public |
+| **POST** | `/api/auth/login` | Validates credentials; returns JWT, Tenant ID & Refresh Token | Public |
+| **GET** | `/api/products` | Lists store-specific catalog (Automated tenant filter) | Authenticated |
+| **POST** | `/api/batches` | Ingests a new incoming stock lot with production/expiry data | Inventory Manager |
+| **POST** | `/api/sales` | Commits sales order (Evaluates batch stock & triggers alerts) | Owner |
+| **POST** | `/api/lost-sales` | Records missed consumer demand parameters manually/automatically | Owner |
 
 ---
 
 ## 📂 Project Folder Structure
 
 * **Stockyo.Domain/**: Core Business Models, Aggregate Roots, Relational Multi-Tenant Domain Entities
-* **Stockyo.Application/**: CQRS Commands/Queries, MediatR Handlers, Validation & Business Use Cases
+* **Stockyo.Application/**: All Services, Token Services, profiles, Validation & Business Use Cases
 * **Stockyo.Infrastructure/**: Tenant-Scoped EF Core Context, Migrations, Identity Service Layer, SignalR Hub implementations
 * **Stockyo.WebAPI/**: REST Controllers, Middleware pipelines, Routing configurations, Program.cs setup
 
@@ -126,8 +125,19 @@ Navigate to Stockyo.WebAPI/appsettings.json and adjust the ConnectionStrings:Def
 Run the following EF Core CLI command to generate tables and map constraints:
   ```bash
   dotnet ef database update --project Stockyo.Infrastructure --startup-project Stockyo.WebAPI
+```
 
 4. **Launch Application:**
   ```bash
   dotnet run --project Stockyo.WebAPI
 Once executed, open your browser and navigate to https://localhost:7001/swagger to interact with the OpenAPI dashboard.
+```
+
+## 📈 Future System Roadmap
+
+* **Distributed Caching Layer**: Integrating **Redis Cache** to optimize high-frequency read operations on product catalogs and store dashboards.
+* **Message Broker Decoupling**: Introducing **RabbitMQ** or **Azure Service Bus** to handle asynchronous AI background ingestion and bulk forecasting tasks.
+* **Containerization**: Authoring multi-stage **Dockerfiles** to simplify orchestration and microservice preparedness.
+
+---
+*Developed by Shahd Ayman – Backend Software Engineer*
